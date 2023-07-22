@@ -1,5 +1,12 @@
 #' @export
-nictab.NIClm <-
+naictab <- function(cand.set, modnames = NULL, second.ord = TRUE, nobs = NULL, sort = TRUE, ...) {
+  ##format list according to model class
+  cand.set <- formatCands(cand.set)
+  UseMethod("naictab", cand.set)
+}
+
+#' @export
+naictab.AIClm <-
   function(cand.set, modnames = NULL, second.ord = TRUE, nobs = NULL, sort = TRUE, ...){
 
     ##check if named list if modnames are not supplied
@@ -26,7 +33,7 @@ nictab.NIClm <-
     Results$Delta_AICc <- Results$AICc - min(Results$AICc)            #compute delta AICc
     Results$ModelLik <- exp(-0.5*Results$Delta_AICc)                #compute model likelihood required to compute Akaike weights
     Results$AICcWt <- Results$ModelLik/sum(Results$ModelLik)        #compute Akaike weights
-    Results$NIC <- Results$AICc/unlist(lapply(X = cand.set, FUN = nobs))
+    Results$NAIC <- Results$AICc/unlist(lapply(X = cand.set, FUN = nobs))
 
     ##check if some models are redundant
     if(length(unique(Results$AICc)) != length(cand.set)) warning("\nCheck modelefully as some mod structure carels may be redundant\n")
@@ -36,7 +43,7 @@ nictab.NIClm <-
 
     ##rename correctly to AIC
     if(second.ord == FALSE) {
-      colnames(Results)[1:7] <- c("Modnames", "K", "AIC", "Delta_AIC", "ModelLik", "AICWt", "NIC")
+      colnames(Results)[1:7] <- c("Modnames", "K", "AIC", "Delta_AIC", "ModelLik", "AICWt", "NAIC")
     }
 
 
@@ -51,7 +58,7 @@ nictab.NIClm <-
   }
 
 #' @export
-nictab.NICglm.lm <-
+naictab.AICglm.lm <-
   function(cand.set, modnames = NULL, second.ord = TRUE, nobs = NULL, sort = TRUE, c.hat = 1, ...){
     
     ##check if named list if modnames are not supplied
@@ -78,7 +85,7 @@ nictab.NICglm.lm <-
     Results$Delta_AICc <- Results$AICc - min(Results$AICc)            #compute delta AICc
     Results$ModelLik <- exp(-0.5*Results$Delta_AICc)                #compute model likelihood required to compute Akaike weights
     Results$AICcWt <- Results$ModelLik/sum(Results$ModelLik)        #compute Akaike weights
-    Results$NIC <- Results$AICc/unlist(lapply(X = cand.set, FUN = nobs))
+    Results$NAIC <- Results$AICc/unlist(lapply(X = cand.set, FUN = nobs))
     
     ##check if some models are redundant
     if(length(unique(Results$AICc)) != length(cand.set)) warning("\nCheck model structure carefully as some models may be redundant\n")
@@ -90,7 +97,7 @@ nictab.NICglm.lm <-
     
     ##rename correctly to QAICc and add column for c-hat
     if(second.ord == TRUE && c.hat > 1) {
-      colnames(Results) <- c("Modnames", "K", "QAICc", "Delta_QAICc", "ModelLik", "QAICcWt", "NIC")
+      colnames(Results) <- c("Modnames", "K", "QAICc", "Delta_QAICc", "ModelLik", "QAICcWt", "NAIC")
       LL <- unlist(lapply(X=cand.set, FUN = function(i) logLik(i)[1]))
       Results$Quasi.LL <- LL/c.hat
       Results$c_hat <- c.hat
@@ -98,13 +105,13 @@ nictab.NICglm.lm <-
     
     ##rename correctly to AIC
     if(second.ord == FALSE && c.hat == 1) {
-      colnames(Results)<-c("Modnames", "K", "AIC", "Delta_AIC", "ModelLik", "AICWt", "NIC")
+      colnames(Results)<-c("Modnames", "K", "AIC", "Delta_AIC", "ModelLik", "AICWt", "NAIC")
       Results$LL <- unlist(lapply(X=cand.set, FUN=function(i) logLik(i)[1]))      
     }  
     
     ##rename correctly to QAIC and add column for c-hat
     if(second.ord == FALSE && c.hat > 1) {
-      colnames(Results)<-c("Modnames", "K", "QAIC", "Delta_QAIC", "ModelLik", "QAICWt", "NIC")
+      colnames(Results)<-c("Modnames", "K", "QAIC", "Delta_QAIC", "ModelLik", "QAICWt", "NAIC")
       LL <- unlist(lapply(X=cand.set, FUN=function(i) logLik(i)[1]))
       Results$Quasi.LL <- LL/c.hat
       Results$c_hat<-c.hat
