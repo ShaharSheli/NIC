@@ -1,0 +1,15 @@
+bibentry(bibtype = "Manual",
+         title = "Normalized Information Criteria and Model Selection in the Presence of Missing Data",
+         author = "Cohen,N.;Berchenko,Y.",
+         year = "2021")
+         
+bibentry(bibtype = "Manual",
+         title = "AICcmodavg: Model selection and multimodel inference based on (Q)AIC(c)",
+         author = person(given = c("Marc", "J."), family = "Mazerolle",
+                         role = "aut", email = "marc.mazerolle@sbf.ulaval.ca"),
+         year = "2023",
+         note = "R package version 2.3.2",
+         url = "https://cran.r-project.org/package=AICcmodavg",	       
+         textVersion = NULL, bibtex = TRUE,
+         header = "To cite package 'AICcmodavg' in publications use:",
+         key = "AICcmodavg-package")
